@@ -8,7 +8,7 @@ al igual que los requerimientos del proyecto*/
 
 int main(){
 
-    cout << "Hola" ;
+    cout << "Proyecto Digito" ;
 
     return 0;
 }
