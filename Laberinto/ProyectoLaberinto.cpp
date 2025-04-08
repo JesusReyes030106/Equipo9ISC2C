@@ -8,7 +8,7 @@ en el documento de la maestra antes de de reaalizarlo*/
 int main(){
 
 
-    cout << "Proyecto Laberinto";
+    cout << "Proyecto xc xzc zxc xc";
 
 
     return 0;
