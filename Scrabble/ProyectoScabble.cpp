@@ -1,8 +1,8 @@
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <iostream>
 #define TAM 9
 using namespace std;
 
