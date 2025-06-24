@@ -7,7 +7,7 @@ using namespace std;
 
 // Prototipos
 void limpiar(char,char *);
-bool contieneSubsecuencia(char *texto, char *mensaje);
+bool contieneSubsecuencia(char *, char *);
 
 int main() {
     int casos;
@@ -30,8 +30,9 @@ int main() {
         cin.getline(mensaje, 2100);
         limpiar(limpioTitular, titular);
         limpiar(limpioMensaje, mensaje);
-        cout << "Titular limpio: " << limpioTitular << endl;
-        cout << "Mensaje limpio: " << limpioMensaje << endl;
+        //Forma de combrobar como es que se quita lo que no es una letra como espacios y puntos
+        //cout << "Titular limpio: " << limpioTitular << endl;
+        //cout << "Mensaje limpio: " << limpioMensaje << endl;
 
         fprintf(archivo, "Caso %d:\n", i + 1);
         fprintf(archivo, "Titular original: %s\n", titular);
