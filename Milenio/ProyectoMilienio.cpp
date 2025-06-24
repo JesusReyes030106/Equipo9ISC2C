@@ -5,14 +5,21 @@ using namespace std;
 '\0' -> es pasa saber donde termina y no leea basura :)
 */
 
+// estructura para guardar los datos de cada caso
+struct Caso {
+    char titular[2100];
+    char mensaje[2100];
+    char limpioTitular[2100];
+    char limpioMensaje[2100];
+};
+
 // Prototipos
-void limpiar(char,char *);
-bool contieneSubsecuencia(char *, char *);
+void limpiar(char*, char*);
+bool contieneSubsecuencia(char *texto, char *mensaje);
 
 int main() {
     int casos;
-    char titular[2100], mensaje[2100];
-    char limpioTitular[2100], limpioMensaje[2100];
+    Caso datos[2100]; // arreglo de estructuras para guardar todos los casos
     cout << "Ingrese el número de casos: ";
     cin >> casos;
     cin.ignore();  // limpia ek salto de linea
@@ -25,23 +32,22 @@ int main() {
     for (int i = 0; i < casos; i++) {
         cout << "\nCaso " << i + 1 << endl;
         cout << "Ingrese el titular: ";
-        cin.getline(titular, 2100);
+        cin.getline(datos[i].titular, 2100);
         cout << "Ingrese el mensaje: ";
-        cin.getline(mensaje, 2100);
-        limpiar(limpioTitular, titular);
-        limpiar(limpioMensaje, mensaje);
-        //Forma de combrobar como es que se quita lo que no es una letra como espacios y puntos
-        //cout << "Titular limpio: " << limpioTitular << endl;
-        //cout << "Mensaje limpio: " << limpioMensaje << endl;
+        cin.getline(datos[i].mensaje, 2100);
+        limpiar(datos[i].limpioTitular, datos[i].titular);
+        limpiar(datos[i].limpioMensaje, datos[i].mensaje);
+        cout << "Titular limpio: " << datos[i].limpioTitular << endl;
+        cout << "Mensaje limpio: " << datos[i].limpioMensaje << endl;
 
         fprintf(archivo, "Caso %d:\n", i + 1);
-        fprintf(archivo, "Titular original: %s\n", titular);
-        fprintf(archivo, "Titular limpio: %s\n", limpioTitular);
-        fprintf(archivo, "Mensaje original: %s\n", mensaje);
-        fprintf(archivo, "Mensaje limpio: %s\n", limpioMensaje);
+        fprintf(archivo, "Titular original: %s\n", datos[i].titular);
+        fprintf(archivo, "Titular limpio: %s\n", datos[i].limpioTitular);
+        fprintf(archivo, "Mensaje original: %s\n", datos[i].mensaje);
+        fprintf(archivo, "Mensaje limpio: %s\n", datos[i].limpioMensaje);
 
         // Verificar si el mensaje está contenido como subsecuencia
-        if (contieneSubsecuencia(limpioTitular, limpioMensaje)) {
+        if (contieneSubsecuencia(datos[i].limpioTitular, datos[i].limpioMensaje)) {
             cout << "SI\n";
             fprintf(archivo, "Resultado: SI\n\n");
         } else {
