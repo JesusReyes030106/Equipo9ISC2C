@@ -5,22 +5,30 @@ using namespace std;
 //Estatus - Funcional / Revisar Algunos puntos con la maestra
 //Programador: Jesus
 
-//Funcion que recibe los datos
-void llenarVectorDigito(long long int, int []);
+union CodigoV{
+    int validador;
+ };
 
+//Funcion que recibe los datos
+int llenarVectorDigito(long long int, int [], int);
 bool validarDigitoIsbn(int []);
+
+CodigoV digitoValidador;
 
 int main(){
 
     long long int digito = 0;
-    int vecDigito[13];
-
+    int *vecDigito;
     cout << "Ingresa El digito / Isbn: " << endl;
     cin >> digito;
 
-    llenarVectorDigito(digito, vecDigito);
+    if(cin.fail()){
+        cout << "Error, ingresastes caracteres invalidos" << endl;
+        return 0;
+    }
+    vecDigito = (int*)malloc(12*sizeof(int));
 
-    
+    llenarVectorDigito(digito, vecDigito, 12);
 
     if(validarDigitoIsbn(vecDigito)){
         cout << "Codigo valido" << endl;
@@ -28,24 +36,24 @@ int main(){
         cout << "Codigo Invalido" << endl;
     }
 
-
-    
+    free(vecDigito);
 
     return 0;
 }
 
-void llenarVectorDigito(long long int digito, int vecDigito[]){
-    int i = 12;
-
-    while(digito != 0){
-        vecDigito[i] = digito % 10;
+int llenarVectorDigito(long long int digito, int vecDig[], int i){
+    if(digito == 0){
+        return 0;
+    }else{
+        if(i == 12){
+            digitoValidador.validador = digito % 10;
+        }
+        else{
+            vecDig[i] = digito % 10;
+        }
         digito /= 10;
-        i--;
+        return llenarVectorDigito(digito, vecDig, i-1);
     }
-    /*Se usa el residuo de 10 para separa el ultimo digito
-    se divide entre 10 para seguir con el siguiente y se guardan al reves
-    para que queden ordenados*/
-    
 }
 
 bool validarDigitoIsbn(int vecDigito[]){
@@ -66,7 +74,7 @@ bool validarDigitoIsbn(int vecDigito[]){
     //Si el residuo obtenido es mayor a 9 automaticamente se combierte en 0;
     if(residuo > 9) residuo = 0;
     // validar el valor obtenido con el codigo verificador, que es la utima posicion del vector
-    if(residuo == vecDigito[12]){
+    if(residuo == digitoValidador.validador){
         return true;
     }
     return false;
