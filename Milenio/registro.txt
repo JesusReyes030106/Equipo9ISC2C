@@ -1,0 +1,60 @@
+Caso 1:
+Titular original: Teo dijo "s¡!".
+Mensaje original: te odio.
+Resultado: NO
+
+Caso 2:
+Titular original: Y adios, que ya viene el alba.
+Mensaje original: te odio.
+Resultado: NO
+
+Caso 1:
+Titular original: ... detente ... somete ... de varios periodistas ...
+Mensaje original: te odio.
+Resultado: NO
+
+Caso 1:
+Titular original: ...detente ...somete de varios periodistas ...
+Mensaje original: te odio.
+Resultado: NO
+
+Caso 1:
+Titular original: ...detente ...somete de varios periodistas ...
+Mensaje original: te odio.
+Resultado: NO
+
+Caso 1:
+Titular original: te odio.
+Titular limpio: teodio
+Mensaje original: te odio.
+Mensaje limpio: teodio
+Resultado: SI
+
+Caso 1:
+Titular original: ...detente ...somete de varios periodistas ...
+Titular limpio: detentesometedevariosperiodistas
+Mensaje original: te odio.
+Mensaje limpio: teodio
+Resultado: NO
+
+Caso 1:
+Titular original: ...detente ...somete de varios periodistas ...
+Titular limpio: detentesometedevariosperiodistas
+Mensaje original: te odio.
+Mensaje limpio: teodio
+Resultado: NO
+
+Caso 1:
+Titular original: ...detente ...somete de varios periodistas ...
+Titular limpio: detentesometedevariosperiodistas
+Mensaje original: te odio.
+Mensaje limpio: teodio
+Resultado: NO
+
+Caso 1:
+Titular original: ...detente ...somete de varios periodistas ...
+Titular limpio: detentesometedevariosperiodistas
+Mensaje original: te odio.
+Mensaje limpio: teodio
+Resultado: SI
+
