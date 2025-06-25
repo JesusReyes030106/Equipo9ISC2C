@@ -6,6 +6,12 @@
 #define TAM 9
 using namespace std;
 
+// Enumeración para la dirección de la palabra
+enum Direccion {
+    HORIZONTAL,
+    VERTICAL
+};
+
 struct NodoJugador {
     char nombre[50];
     int puntaje;
@@ -13,13 +19,13 @@ struct NodoJugador {
 };
 
 // Prototipos
-void agregarJugador(NodoJugador*&, const char*);
+void agregarJugador(NodoJugador*&, char*);
 void mostrarJugadores(NodoJugador*);
 void liberarMemoria(NodoJugador*&);
 void inicializarTablero(char**&, int, int);
 void mostrarTablero(char**, int, int);
-bool esPalabra(const char*, const char*);
-bool colocarPalabra(char**, int, int, int, int, bool, const char*);
+bool esPalabra(char*, char*);
+bool colocarPalabra(char**, int, int, int, int, Direccion, char*);
 void liberarTablero(char**&, int);
 
 int main() {
@@ -27,7 +33,7 @@ int main() {
     char** tablero = NULL;
     inicializarTablero(tablero, filas, columnas);
 
-    const char* rutaDiccionario = "diccionario.txt";
+    char rutaDiccionario[] = "diccionario.txt";
     char opcion;
 
     // Agregar palabras al diccionario
@@ -89,6 +95,8 @@ int main() {
         }
 
         int fila, col, orientacion;
+        Direccion dir;
+
         cout << "Fila inicial (0-" << TAM - 1 << ") ";
         cin >> fila;
         cout << "Columna inicial (0-" << TAM - 1 << ") ";
@@ -96,7 +104,13 @@ int main() {
         cout << "Orientación (0=HORIZONTAL, 1=VERTICAL) ";
         cin >> orientacion;
 
-        if (colocarPalabra(tablero, filas, columnas, fila, col, (orientacion == 0), palabra)) {
+        if (orientacion == 0) {
+            dir = HORIZONTAL;
+        } else {
+            dir = VERTICAL;
+        }
+
+        if (colocarPalabra(tablero, filas, columnas, fila, col, dir, palabra)) {
             actual->puntaje += strlen(palabra);
             turno = (turno + 1) % numJugadores;
 
@@ -117,7 +131,7 @@ int main() {
     return 0;
 }
 
-void agregarJugador(NodoJugador*& cabeza, const char* nombre) {
+void agregarJugador(NodoJugador*& cabeza, char* nombre) {
     NodoJugador* nuevo = new NodoJugador;
     strncpy(nuevo->nombre, nombre, 49);
     nuevo->nombre[49] = '\0';
@@ -169,7 +183,7 @@ void mostrarTablero(char** t, int f, int c) {
     cout << "+\n";
 }
 
-bool esPalabra(const char* palabra, const char* ruta) {
+bool esPalabra(char* palabra, char* ruta) {
     FILE* f = fopen(ruta, "r");
     if (!f) return false;
 
@@ -186,36 +200,30 @@ bool esPalabra(const char* palabra, const char* ruta) {
     return false;
 }
 
-bool colocarPalabra(char** t, int filas, int columnas, int f, int c, bool horiz, const char* palabra) {
+bool colocarPalabra(char** t, int filas, int columnas, int f, int c, Direccion dir, char* palabra) {
     int len = strlen(palabra);
 
-    if (horiz) {
-        if (c + len > columnas) {
-            return false;
-        }
+    if (dir == HORIZONTAL) {
+        if (c + len > columnas) return false;
     } else {
-        if (f + len > filas) {
-            return false;
-        }
+        if (f + len > filas) return false;
     }
 
     for (int i = 0; i < len; ++i) {
         int r, col;
-        if (horiz) {
+        if (dir == HORIZONTAL) {
             r = f;
             col = c + i;
         } else {
             r = f + i;
             col = c;
         }
-        if (t[r][col] != ' ' && t[r][col] != toupper(palabra[i])) {
-            return false;
-        }
+        if (t[r][col] != ' ' && t[r][col] != toupper(palabra[i])) return false;
     }
 
     for (int i = 0; i < len; ++i) {
         int r, col;
-        if (horiz) {
+        if (dir == HORIZONTAL) {
             r = f;
             col = c + i;
         } else {
