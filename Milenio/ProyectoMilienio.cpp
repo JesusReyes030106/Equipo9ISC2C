@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string.h>
+#define TAM 2100 //Máximos caracteres a utilizar en los mensajes
 using namespace std;
 /*diccionario:
 '\0' -> es pasa saber donde termina y no leea basura :)
@@ -36,15 +37,15 @@ int main() {
         cout << "\nCaso " << i + 1 << endl;
 
         // Reservar memoria para cada campo
-        datos[i].titular = new char[2100];
-        datos[i].mensaje = new char[2100];
-        datos[i].limpioTitular = new char[2100];
-        datos[i].limpioMensaje = new char[2100];
+        datos[i].titular = new char[TAM];
+        datos[i].mensaje = new char[TAM];
+        datos[i].limpioTitular = new char[TAM];
+        datos[i].limpioMensaje = new char[TAM];
 
         cout << "Ingrese el titular: ";
-        cin.getline(datos[i].titular, 2100);
+        cin.getline(datos[i].titular, TAM);
         cout << "Ingrese el mensaje: ";
-        cin.getline(datos[i].mensaje, 2100);
+        cin.getline(datos[i].mensaje, TAM);
         limpiar(datos[i].limpioTitular, datos[i].titular);
         limpiar(datos[i].limpioMensaje, datos[i].mensaje);
         cout << "Titular limpio: " << datos[i].limpioTitular << endl;
