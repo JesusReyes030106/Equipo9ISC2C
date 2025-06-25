@@ -68,7 +68,7 @@ int main() {
 
     fclose(archivo);
 
-    // Liberar memoria dinamica
+    // Liberar memoria dinamica (buena practica )
     for (int i = 0; i < casos; i++) {
         delete[] datos[i].titular;
         delete[] datos[i].mensaje;
