@@ -6,65 +6,73 @@
 #define TAM 4 //tamaño definido de la matriz
 using namespace std;
 
-int **crearMatriz();
-int laberinto(int **Mat, int *posRen, int*posCol);
+struct Laberinto{
+ int **matriz;
+ int resultado;
+ int posRen;
+ int posCol;
+
+};
+
+Laberinto crearMatriz();
 void generarArchivos();
-void mostrar(int **Mat);
-void escribir (FILE *salida,int **Mat, int resultado, int posRen, int posCol);
-void leer (int **Mat , FILE* entrada);
-void liberarMatriz(int **Mat);
+void mostrar(const Laberinto &lab);
+int laberinto(Laberinto &lab);
+void escribir (FILE *salida,const Laberinto &labl);
+void leer (Laberinto &lab, FILE* entrada);
+void liberarMatriz(Laberinto &lab);
+
 FILE* archivoEntrada();
 FILE* archivoSalida ();
 
 
 int main(){
-    //declaracion de variables 
     FILE *entrada, *salida;
-    int **Mat;
-    int posRen, posCol;
+    Laberinto lab;
 
-    srand(time(NULL));// random para generación de numeros dentro de la matriz
-    generarArchivos();//función para generar archivos(archivo de entrada)
+    srand(time(NULL));
+    generarArchivos();
     //Abre los archivos de entrada y salida respectivamente
     entrada=archivoEntrada();
     salida=archivoSalida();
 
-    if(entrada==NULL|| salida ==NULL){// condicionale que termina el programa
-        return 0;                     // si falla alguno de los archivos (entrada o salida)
+    if(entrada==NULL|| salida ==NULL){
+        return 0;                    
     }
     
-    Mat= crearMatriz(); // matriz con reserva de memoria dinámica
-    leer(Mat, entrada); //llama a la función leer para llenar la matriz con  los datos de entrada que lee
-    fclose (entrada); // cierra el archivo 
+    lab= crearMatriz(); 
+    leer(lab, entrada); 
+    fclose (entrada); 
 
     cout<<"Matriz:"<<endl; 
-    mostrar(Mat); //muestra/imprime la matriz
+    mostrar(lab); 
     
-    int resultado=laberinto (Mat,&posRen,&posCol);//el resultado es la sumatoria requerida del laberinto y la posicion en la que termina 
+    lab.resultado=laberinto (lab);
 
-    escribir (salida, Mat,resultado,posRen,posCol);//llamada a la función escribir 
-    fclose(salida);//cierra el archivo
-    liberarMatriz(Mat); //llama a la función que libera la matriz
+    escribir (salida, lab);
+    fclose(salida);
+    liberarMatriz(lab);
     return 0;
 }
 
 
 //FUNCIONES 
 
-int **crearMatriz(){
-    int **Mat=(int **)calloc(TAM, sizeof(int *)); //reserva de memoria dinámica (filas)
-    if (Mat == NULL){ //Condicional que verifica la reserva de memoria
+Laberinto crearMatriz(){
+    Laberinto lab;
+    lab.matriz=(int **)calloc(TAM, sizeof(int *)); //reserva de memoria dinámica (filas)
+    if (lab.matriz == NULL){ 
         printf("Error al reservar memoria");
-        exit(1); // si falla, termina el programa
+        exit(1); 
     }
-    for (int i=0; i<TAM;i++){ //Ciclo que recorre las filas de la matriz 
-        Mat[i]=(int*) calloc (TAM, sizeof (int)); //reserva memoria para las columnas
-        if (Mat[i]== NULL){ //Condicional que verifica la reserva de memoria
+    for (int i=0; i<TAM;i++){ 
+        lab.matriz[i]=(int*) calloc (TAM, sizeof (int)); //reserva memoria para las columnas
+        if (lab.matriz[i]== NULL){ 
             printf ("Error!!\n");
-            exit(1); // si falla, termina el programa
+            exit(1); 
         }
     }
-    return Mat; // retorma el puntero a la matriz 
+    return lab; 
 }
 
 void generarArchivos(){
@@ -86,86 +94,81 @@ void generarArchivos(){
 }
 
 FILE* archivoEntrada (){
-    FILE* f=fopen ("entrada.txt", "r"); //Abre el archivo para lectura (read)
-    if (f ==NULL){//Condicional que verifica si se abrió correctamente
+    FILE* f=fopen ("entrada.txt", "r");
+    if (f ==NULL){
         cout <<"Error al abrir el archivo!!"<<endl;
-        return NULL; //Retorna error
+        return NULL; 
     }
-    return f; //Si no se cumple el condicional se retorna el puntero f al archivo abierto
+    return f; 
 }
 
 FILE* archivoSalida(){ 
-    FILE* f=fopen ("salida.txt", "w"); //Abre el archivo para escritura (wright)
-    if (f ==NULL){//Condicional que verifica si se abrió correctamente
+    FILE* f=fopen ("salida.txt", "w"); 
+    if (f ==NULL){
         cout <<"Error al abrir el archivo!!"<<endl;
-        return NULL; //Retorna error
+        return NULL; 
     }
-    return f; //Si no se cumple el condicional se retorna el puntero f al archivo abierto
+    return f; 
 }
 
-void leer(int **Mat, FILE* entrada){
+void leer(Laberinto &lab, FILE* entrada){
     for (int i=0; i<TAM; i++){
         for (int j=0; j<TAM; j++){
-            fscanf (entrada, "%d\t", &Mat[i][j]); // lee un numero del archivo y lo guarda en la matriz 
+            fscanf (entrada, "%d\t", &lab.matriz[i][j]); // lee un numero del archivo y lo guarda en la matriz 
         }
     }
 }
 
-void mostrar (int **Mat){ //Función para mostrar en consola 
-    cout<<"    "; //Espacio que antes de los numeros que indican las columnas para que queden alineados 
-    for (int j=0;j<TAM; j++){ //Ciclo que recorre columas
+void mostrar (const Laberinto &lab){ //Función para mostrar en consola 
+    cout<<"    "; 
+    for (int j=0;j<TAM; j++){ 
         cout<<" "<<j+1<<"  "; //Imprime los números de las columas dejando un espacio entre cada numero
     }
     cout<<endl; // Salto de linea 
-    cout<<"   "<<string(TAM*4, '-')<<" "<<endl; // Linea de separacion entre los numeros de columnas y la matriz 
-    for (int i=0; i<TAM; i++){ //Ciclo que recorre las filas
+    cout<<"   "<<string(TAM*4, '-')<<" "<<endl; 
+    for (int i=0; i<TAM; i++){ 
         cout<<" "<<i+1<<"|"; // Imprime el numero de filas y una linea que separa los numeros de la matriz 
         for (int j=0; j<TAM; j++){ 
-            printf(" %2d ", Mat[i][j]);  //Imprime los valores de la columnas en la fila [i](al estar dentro del ciclo que recorre i )
+            printf(" %2d ", lab.matriz[i][j]);  //Imprime los valores de la columnas en la fila [i](al estar dentro del ciclo que recorre i )
         }
-        cout <<"|"<<endl; //Al terminar cada fila, imprime una linea y hace salto de linea 
+        cout <<"|"<<endl; 
     }       
-    cout<<"   "<<string(TAM*4, '-')<<" "<<endl; //Linea de separación final 
+    cout<<"   "<<string(TAM*4, '-')<<" "<<endl; 
 }
 
-int laberinto(int **Mat,int*posRen, int*posCol){
+int laberinto(Laberinto &lab){
     int sumatoria=0, chacales=0;
 
     for (int i = 0; i <TAM; i++) { //Ciclo que recorre la diagonal de la matriz
-        if (Mat[i][i]==0){ //Condicional si la poscición encuentra el valor 0 en el recorrido 
-            chacales++; //Suma 1 si se cumple el condicional 
-            if(chacales==3){ //Si la variable chacales llega a 3
-                //guarda las posiciones en las que termina el recorrido
-                *posCol=i+1;  
-                *posRen=i+1;
-                return sumatoria; //Devuelve el resultado de la sumatoria 
-            }//if
-        }//if
-               else{
-                sumatoria+= Mat[i][i]; // Si el numero es diferente a cero, se agrega a la sumatoria 
-            }//else
-    }//for
-        
+        if (lab.matriz[i][i]==0){ 
+            chacales++; 
+            if(chacales==3){ 
+                lab.posRen=i+1;  
+                lab.posCol=i+1;
+                return sumatoria; 
+            }
+        } else{
+                sumatoria+= lab.matriz[i][i]; 
+            }
+    }
         for (int i=TAM-2; i>=0; i--) { //Recorre la última columna si no llegó a los 3 ceros
-           //Misma verificacion de los ceros en la diagonal para la columna 
-            if (Mat[i][TAM-1]==0) {
+            if (lab.matriz[i][TAM-1]==0) {
                 chacales ++;
                 if (chacales==3){
-                *posCol=TAM;
-                *posRen=i+1;
+                lab.posRen=TAM;
+                lab.posCol=i+1;
                 return sumatoria;
-            }//if
-        } //if 
-        else{
-            sumatoria +=Mat[i][TAM-1];
-        }//ekse
-    }//for
-    *posCol=TAM; 
-    *posRen=1;
+            }
+        } else{
+            sumatoria +=lab.matriz[i][TAM-1];
+        }
+    }
+    lab.posCol=TAM; 
+    lab.posRen=1;
     return sumatoria;
 }
 
-void escribir(FILE *salida,int **Mat, int resultado, int posRen, int posCol){
+void escribir(FILE *salida, const Laberinto &lab){
     fprintf(salida, "Matriz\n");
     fprintf(salida, "    ");
 
@@ -174,41 +177,40 @@ void escribir(FILE *salida,int **Mat, int resultado, int posRen, int posCol){
     }
     fprintf(salida, "\n");
 
-    //Formato y estética para el archivo
     fprintf(salida, "   °");
     for(int j=0; j<TAM; j++){
         fprintf(salida,"----");
     }
     fprintf(salida, "°\n");
-    //Imprime filas y el numero de la fila correspondiente
+    
     for (int i=0;i<TAM;i++){
         fprintf(salida, "%2d |", i+1);//Numero 
         for (int j=0; j<TAM; j++){
-            fprintf(salida, " %2d ", Mat[i][j]);//Valor
+            fprintf(salida, " %2d ", lab.matriz[i][j]);
         }
         fprintf(salida, "|\n");  
     }
-    //Formato y estética para el archivo
         fprintf(salida, "   °");
     for (int j=0; j<TAM; j++){
         fprintf(salida, "----");
     }
     fprintf(salida,"°\n");
     //Imprime el resultado de la sumatoria y la posición
-    fprintf(salida, "Laberinto: %d\t", resultado);
-    fprintf(salida, "Posicion: renglon %d\tcolumna %d\n", posRen, posCol);
+    fprintf(salida, "Laberinto: %d\t", lab.resultado);
+    fprintf(salida, "Posicion: renglon %d\tcolumna %d\n", lab.posRen, lab.posCol);
     //Imprime los resultados en la consola 
-    cout<< "Laberinto: "<<resultado<<endl;
-    cout<< "Renglon: "<<posRen<<endl;
-    cout<<"Columna: "<<posCol<<endl;
+    cout<< "Laberinto: "<<lab.resultado<<endl;
+    cout<< "Renglon: "<<lab.posRen<<endl;
+    cout<<"Columna: "<<lab.posCol<<endl;
 
 }
 
-void liberarMatriz(int **Mat){
+void liberarMatriz(Laberinto &lab){
     //Libera memoria de cada fila
     for (int i=0; i<TAM; i++){
-        free (Mat[i]); //Liberia memoria que se asigno en [i]
+        free (lab.matriz[i]); //Liberia memoria que se asigno en [i]
     }
     //Libera la memoria del arreglo de punteros 
-    free (Mat);
+    free (lab.matriz);
+    lab.matriz=NULL;
 }
